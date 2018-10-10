@@ -24,6 +24,7 @@ public final class Matcher<R> implements Function<Object, R> {
             this.clazz = clazz;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public Matcher<R> then(Function<B, R> function) {
             matcher.fMap.put(clazz, function);
