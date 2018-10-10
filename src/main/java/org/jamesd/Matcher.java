@@ -7,27 +7,27 @@ import java.util.function.Function;
 public final class Matcher<R> implements Function<Object, R> {
     private final Map<Class<?>, Function<Object, R>> fMap = new HashMap<>();
 
-    public <B> Acceptor<R,B> on(Class<B> clazz) {
-        return new Acceptor<>(this, clazz);
+    public <B> Acceptor<B,R> on(Class<B> clazz) {
+        return new ClassAcceptor<>(this, clazz);
     }
 
     public R apply(Object o) {
         return fMap.get(o.getClass()).apply(o);
     }
 
-    static class Acceptor<R, B> {
-        private final Matcher visitor;
+    static class ClassAcceptor<R, B> implements Acceptor<B,R>{
+        private final Matcher matcher;
         private final Class<B> clazz;
 
-        Acceptor(Matcher visitor, Class<B> clazz) {
-            this.visitor = visitor;
+        ClassAcceptor(Matcher matcher, Class<B> clazz) {
+            this.matcher = matcher;
             this.clazz = clazz;
         }
 
         @SuppressWarnings("unchecked")
         public Matcher<R> then(Function<B, R> function) {
-            visitor.fMap.put(clazz, function);
-            return visitor;
+            matcher.fMap.put(clazz, function);
+            return matcher;
         }
     }
 }
