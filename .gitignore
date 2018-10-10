@@ -1,0 +1,102 @@
+
+######################
+# Directories #
+######################
+target/
+/build/
+/bin/
+
+######################
+# Windows
+######################
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+######################
+# OSX
+######################
+.DS_Store
+.svn
+.bundle
+.git
+.hg
+
+######################
+# Thumbnails #
+######################
+._*
+
+######################
+# Files that might appear on external disk #
+######################
+.Spotlight-V100
+.Trashes
+
+######################
+# Package Files #
+######################
+*.jar
+*.war
+*.ear
+*.class
+hs_err_pid*
+
+######################
+# Eclipse #
+######################
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/src/main/resources/rebel.xml
+clientdb.xml
+.eclipse
+
+######################
+# External tool builders #
+######################
+.externalToolBuilders/
+
+######################
+# Locally stored "Eclipse launch configurations" #
+######################
+*.launch
+
+######################
+# CDT-specific #
+######################
+.cproject
+
+######################
+# PDT-specific #
+######################
+.buildpath
+
+######################
+# IntelliJ #
+######################
+*.iml
+.idea/
+
+######################
+# RTC #
+######################
+.jazz5
+.jazz5/*
+.jazzignore
+.jazzShed
+.jazzShed/*
