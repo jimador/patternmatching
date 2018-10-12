@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public final class Matcher<R> implements Function<Object, R> {
+public final class ClassMatcher<R> implements Function<Object, R> {
     private final Map<Class<?>, Function<Object, R>> fMap = new HashMap<>();
 
     public <B> Acceptor<B,R> on(Class<B> clazz) {
@@ -15,18 +15,18 @@ public final class Matcher<R> implements Function<Object, R> {
         return fMap.get(o.getClass()).apply(o);
     }
 
-    static class ClassAcceptor<R, B> implements Acceptor<B,R>{
-        private final Matcher matcher;
+    static class ClassAcceptor<B,R> implements Acceptor<B,R>{
+        private final ClassMatcher matcher;
         private final Class<B> clazz;
 
-        ClassAcceptor(Matcher matcher, Class<B> clazz) {
+        ClassAcceptor(ClassMatcher matcher, Class<B> clazz) {
             this.matcher = matcher;
             this.clazz = clazz;
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public Matcher<R> then(Function<B, R> function) {
+        public ClassMatcher<R> then(Function<B, R> function) {
             matcher.fMap.put(clazz, function);
             return matcher;
         }

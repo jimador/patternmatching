@@ -2,23 +2,49 @@ package org.jamesd;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class MatcherTest {
 
-    private Matcher<Double> matcher = new Matcher<Double>()
+    enum Foo {
+        FOO, BAR, BAZ;
+
+        Foo() {
+            Lookup.cache.put(this, this.name());
+        }
+
+        static class Lookup {
+            private static Map<Foo, String> cache = new HashMap<>();
+        }
+
+        static String get(Foo foo) {
+            return Lookup.cache.get(foo);
+        }
+    }
+
+    private ClassMatcher<Double> matcher = new ClassMatcher<Double>()
             .on(Double.class).then(d -> d * d)
             .on(String.class).then(Double::valueOf)
-            .on(Integer.class).then(Double::new)
+            .on(Integer.class).then(Double::valueOf)
             .on(SomeData.class).then(someData -> {
                 System.out.println(someData.text);
                 return someData.value;
             })
-            ;
+            .on(Float.class).then(f -> (double) f);
+
+    double d = 2.0;
+
+    private ClassMatcher<String> fooClassMatcher = new ClassMatcher<String>()
+            .on(Foo.FOO.getClass())
+            .then(Foo::get);
 
     @Test
     public void testDouble() {
-        assertEquals(Double.valueOf(4.0), matcher.apply(2.0));
+        assertEquals(Double.valueOf(4.0), matcher.apply(d));
     }
 
     @Test
@@ -34,7 +60,17 @@ class MatcherTest {
     @Test
     public void testSomeData() {
         SomeData sd = new SomeData("poo", 42.0);
-        assertEquals(Double.valueOf(42.0), matcher.apply(sd) );
+        assertEquals(Double.valueOf(42.0), matcher.apply(sd));
+    }
+
+    @Test
+    public void fooTest() {
+        assertEquals(Foo.FOO.name(), fooClassMatcher.apply(Foo.FOO));
+    }
+
+    @Test
+    public void barNegTest() {
+        assertNotEquals(Foo.BAR.name(), fooClassMatcher.apply(Foo.FOO));
     }
 
     class SomeData {
