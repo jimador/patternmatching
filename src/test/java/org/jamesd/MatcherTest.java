@@ -7,6 +7,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class MatcherTest {
 
@@ -71,6 +73,17 @@ class MatcherTest {
     @Test
     public void barNegTest() {
         assertNotEquals(Foo.BAR.name(), fooClassMatcher.apply(Foo.FOO));
+    }
+
+    @Test
+    public void failTest() {
+        try {
+            matcher.apply(1L);
+        } catch (NullPointerException e) {
+            assertTrue(e.getLocalizedMessage().contains("No function for for class: ") );
+            return;
+        }
+        fail();
     }
 
     class SomeData {

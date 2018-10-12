@@ -2,6 +2,7 @@ package org.jamesd;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public final class ClassMatcher<R> implements Function<Object, R> {
@@ -12,7 +13,9 @@ public final class ClassMatcher<R> implements Function<Object, R> {
     }
 
     public R apply(Object o) {
-        return fMap.get(o.getClass()).apply(o);
+        return Optional.ofNullable(fMap.get(o.getClass()))
+                       .map(f -> f.apply(o))
+                       .orElseThrow(() -> new NullPointerException("No function for for class: " + o.getClass().getSimpleName()));
     }
 
     static class ClassAcceptor<B,R> implements Acceptor<B,R>{
