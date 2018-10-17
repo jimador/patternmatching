@@ -28,20 +28,20 @@ class MatcherTest {
         }
     }
 
-    private ClassMatcher<Double> matcher = new ClassMatcher<Double>()
-            .on(Double.class).then(d -> d * d)
-            .on(String.class).then(Double::valueOf)
-            .on(Integer.class).then(Double::valueOf)
-            .on(SomeData.class).then(someData -> {
+    private TypeHandler matcher = TypeHandler.forType(Double.class)
+            .when(Double.class).then(d -> d * d)
+            .when(String.class).then(Double::valueOf)
+            .when(Integer.class).then(Double::valueOf)
+            .when(SomeData.class).then(someData -> {
                 System.out.println(someData.text);
                 return someData.value;
             })
-            .on(Float.class).then(f -> (double) f);
+            .when(Float.class).then(f -> (double) f);
 
     double d = 2.0;
 
-    private ClassMatcher<String> fooClassMatcher = new ClassMatcher<String>()
-            .on(Foo.FOO.getClass())
+    private TypeHandler fooClassMatcher = TypeHandler.forType(String.class)
+            .when(Foo.FOO.getClass())
             .then(Foo::get);
 
     @Test
