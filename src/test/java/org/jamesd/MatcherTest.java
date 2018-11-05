@@ -80,7 +80,7 @@ class MatcherTest {
         try {
             matcher.apply(1L);
         } catch (NullPointerException e) {
-            assertTrue(e.getLocalizedMessage().contains("No function for for class: ") );
+            assertTrue(e.getLocalizedMessage().contains("Could not find resolver for type: ") );
             return;
         }
         fail();

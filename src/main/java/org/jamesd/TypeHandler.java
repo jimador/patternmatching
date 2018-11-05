@@ -27,8 +27,9 @@ public final class TypeHandler<R> implements Function<Object, R> {
     public R apply(Object o) {
         return Optional.ofNullable(fMap.get(o.getClass()))
                        .map(f -> f.apply(o))
-                       .orElse(Optional.ofNullable(fMap.get(Default.class).apply(o))
-                                       .orElseThrow(() -> new NullPointerException("Could not find resolver for type: " + o.getClass().getSimpleName())));
+                       .orElseGet(() -> Optional.ofNullable(fMap.get(Default.class))
+                                                .map(f -> f.apply(o))
+                                                .orElseThrow(() -> new NullPointerException("Could not find resolver for type: " + o.getClass().getSimpleName())));
     }
 
     public static class TypeAcceptor<B, R> {
@@ -52,5 +53,6 @@ public final class TypeHandler<R> implements Function<Object, R> {
         }
     }
 
-    private static class Default { }
+    private static class Default {
+    }
 }
