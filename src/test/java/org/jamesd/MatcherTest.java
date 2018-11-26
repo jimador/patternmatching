@@ -2,6 +2,9 @@ package org.jamesd;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,20 +32,22 @@ class MatcherTest {
     }
 
     private TypeHandler matcher = TypeHandler.forType(Double.class)
-            .when(Double.class).then(d -> d * d)
-            .when(String.class).then(Double::valueOf)
-            .when(Integer.class).then(Double::valueOf)
-            .when(SomeData.class).then(someData -> {
-                System.out.println(someData.text);
-                return someData.value;
-            })
-            .when(Float.class).then(f -> (double) f);
+                                             .when(Double.class).then(d -> d * d)
+                                             .when(String.class).then(Double::valueOf)
+                                             .when(Integer.class).then(Double::valueOf)
+                                             .when(SomeData.class).then(someData -> {
+                                                System.out.println(someData.text);
+                                                    return someData.value;
+                                             })
+                                             .when(Date.class).then(d -> (double) d.getTime())
+                                             .when(Float.class).then(f -> (double) f)
+            ;
 
     double d = 2.0;
 
     private TypeHandler fooClassMatcher = TypeHandler.forType(String.class)
-            .when(Foo.FOO.getClass())
-            .then(Foo::get);
+                                                     .when(Foo.FOO.getClass())
+                                                     .then(Foo::get);
 
     @Test
     public void testDouble() {
@@ -66,6 +71,12 @@ class MatcherTest {
     }
 
     @Test
+    public void testDateAsTimeStamp() {
+        Timestamp ts = Timestamp.from(Instant.EPOCH);
+        assertEquals((double)ts.getTime(), matcher.apply(ts));
+    }
+
+    @Test
     public void fooTest() {
         assertEquals(Foo.FOO.name(), fooClassMatcher.apply(Foo.FOO));
     }
@@ -80,7 +91,7 @@ class MatcherTest {
         try {
             matcher.apply(1L);
         } catch (NullPointerException e) {
-            assertTrue(e.getLocalizedMessage().contains("Could not find resolver for type: ") );
+            assertTrue(e.getLocalizedMessage().contains("Could not find resolver for type: "));
             return;
         }
         fail();
